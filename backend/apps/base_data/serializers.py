@@ -1,5 +1,6 @@
+import json
 from rest_framework import serializers
-from .models import AssetCategory, Department, Location, Supplier
+from .models import AssetCategory, Department, Location, Supplier, AssetFormTemplate
 
 
 class AssetCategorySerializer(serializers.ModelSerializer):
@@ -73,3 +74,34 @@ class SupplierSerializer(serializers.ModelSerializer):
             'address', 'description', 'is_active', 'created_at'
         ]
         read_only_fields = ['id', 'created_at']
+
+
+class JsonField(serializers.CharField):
+    """A CharField that accepts both JSON strings and Python dicts."""
+    def to_internal_value(self, data):
+        if isinstance(data, dict):
+            return json.dumps(data, ensure_ascii=False)
+        if isinstance(data, list):
+            return json.dumps(data, ensure_ascii=False)
+        return super().to_internal_value(data)
+
+    def to_representation(self, value):
+        if isinstance(value, str):
+            try:
+                return json.loads(value)
+            except (json.JSONDecodeError, TypeError):
+                return {}
+        return value or {}
+
+
+class AssetFormTemplateSerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    config = JsonField()
+
+    class Meta:
+        model = AssetFormTemplate
+        fields = [
+            'id', 'category', 'category_name', 'name',
+            'config', 'is_active', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']

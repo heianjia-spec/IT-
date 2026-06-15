@@ -1,11 +1,16 @@
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from core.permissions import IsAdminOrAssetManager
-from .models import AssetCategory, Department, Location, Supplier
+from .models import AssetCategory, Department, Location, Supplier, AssetFormTemplate
 from .serializers import (
     AssetCategorySerializer, AssetCategorySimpleSerializer,
     DepartmentSerializer, DepartmentSimpleSerializer,
-    LocationSerializer, SupplierSerializer
+    LocationSerializer, SupplierSerializer,
+    AssetFormTemplateSerializer,
 )
+from .services import get_merged_template, get_inheritance_chain
+from .field_registry import FIELD_REGISTRY
 
 
 class AssetCategoryViewSet(viewsets.ModelViewSet):
@@ -70,3 +75,40 @@ class SupplierViewSet(viewsets.ModelViewSet):
         if self.action in ('create', 'update', 'partial_update', 'destroy'):
             return [IsAdminOrAssetManager()]
         return []
+
+
+class AssetFormTemplateViewSet(viewsets.ModelViewSet):
+    queryset = AssetFormTemplate.objects.select_related('category').all()
+    serializer_class = AssetFormTemplateSerializer
+    filterset_fields = ['is_active']
+    search_fields = ['name', 'category__name']
+
+    def get_permissions(self):
+        if self.action in ('create', 'update', 'partial_update', 'destroy'):
+            return [IsAdminOrAssetManager()]
+        return []
+
+    @action(detail=False, methods=['get'])
+    def by_category(self, request):
+        """Get merged form template for a given category (with tree inheritance)."""
+        category_id = request.query_params.get('category_id')
+        if not category_id:
+            return Response({'error': 'category_id is required'}, status=400)
+        try:
+            category = AssetCategory.objects.get(id=category_id, is_active=True)
+        except AssetCategory.DoesNotExist:
+            return Response({'error': 'Category not found'}, status=404)
+
+        merged = get_merged_template(category)
+        chain = get_inheritance_chain(category)
+        return Response({
+            'category_id': category.id,
+            'category_name': category.name,
+            'template': merged,
+            'inheritance_chain': chain,
+        })
+
+    @action(detail=False, methods=['get'])
+    def field_registry(self, request):
+        """Return all available field definitions for template editor."""
+        return Response({'fields': list(FIELD_REGISTRY.values())})

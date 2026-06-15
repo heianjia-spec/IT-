@@ -80,6 +80,27 @@ class Location(models.Model):
         return f"{self.code} - {self.name}"
 
 
+class AssetFormTemplate(models.Model):
+    """Dynamic form template per asset category. Supports tree inheritance."""
+    category = models.OneToOneField(
+        'AssetCategory', on_delete=models.CASCADE,
+        related_name='form_template', verbose_name='资产分类'
+    )
+    name = models.CharField('模板名称', max_length=100)
+    config = models.TextField('表单配置', default='{}', help_text='JSON: {"sections":[{"name":"区块名","sort_order":1,"fields":[...]}]}')
+    is_active = models.BooleanField('启用', default=True)
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+    updated_at = models.DateTimeField('更新时间', auto_now=True)
+
+    class Meta:
+        db_table = 'base_form_template'
+        verbose_name = '表单模板'
+        verbose_name_plural = '表单模板'
+
+    def __str__(self):
+        return f"{self.name} ({self.category.name})"
+
+
 class Supplier(models.Model):
     """Supplier/vendor"""
     name = models.CharField('供应商名称', max_length=100)

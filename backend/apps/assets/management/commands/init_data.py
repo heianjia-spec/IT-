@@ -40,6 +40,7 @@ class Command(BaseCommand):
         hardware = AssetCategory.objects.create(name='硬件', code='hardware', sort_order=1)
         software = AssetCategory.objects.create(name='软件', code='software', sort_order=2)
         consumable = AssetCategory.objects.create(name='IT耗材', code='consumable', sort_order=3)
+        multimedia = AssetCategory.objects.create(name='多媒体', code='multimedia', sort_order=4)
 
         # Level 2 under 硬件
         AssetCategory.objects.create(name='服务器', code='hw_server', parent=hardware, sort_order=1)
@@ -52,6 +53,13 @@ class Command(BaseCommand):
         AssetCategory.objects.create(name='交换机', code='hw_switch', parent=net_dev, sort_order=2)
         AssetCategory.objects.create(name='防火墙', code='hw_firewall', parent=net_dev, sort_order=3)
         AssetCategory.objects.create(name='无线控制器', code='hw_wlc', parent=net_dev, sort_order=4)
+
+        # Level 2 under 多媒体
+        AssetCategory.objects.create(name='投影仪', code='mm_projector', parent=multimedia, sort_order=1)
+        AssetCategory.objects.create(name='音响设备', code='mm_audio', parent=multimedia, sort_order=2)
+        AssetCategory.objects.create(name='摄像头', code='mm_camera', parent=multimedia, sort_order=3)
+        AssetCategory.objects.create(name='会议设备', code='mm_conference', parent=multimedia, sort_order=4)
+        AssetCategory.objects.create(name='显示设备', code='mm_display', parent=multimedia, sort_order=5)
 
         print('Created asset categories.')
 

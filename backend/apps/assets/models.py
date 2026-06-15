@@ -12,6 +12,7 @@ class Asset(models.Model):
         ('printer', '打印机'),
         ('network_device', '网络设备'),
         ('switch', '交换机'),
+        ('multimedia', '多媒体设备'),
         ('software', '软件'),
         ('consumable', '耗材'),
     ]
@@ -214,6 +215,8 @@ class Asset(models.Model):
             self.asset_type = 'software'
         elif root_name == 'IT耗材':
             self.asset_type = 'consumable'
+        elif root_name == '多媒体':
+            self.asset_type = 'multimedia'
 
     def save(self, *args, **kwargs):
         if self.warranty_expiry:

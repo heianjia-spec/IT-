@@ -7,6 +7,7 @@ router.register('categories', views.AssetCategoryViewSet, basename='category')
 router.register('departments', views.DepartmentViewSet, basename='department')
 router.register('locations', views.LocationViewSet, basename='location')
 router.register('suppliers', views.SupplierViewSet, basename='supplier')
+router.register('form-templates', views.AssetFormTemplateViewSet, basename='form-template')
 
 urlpatterns = [
     path('', include(router.urls)),

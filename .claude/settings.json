@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s \"http://127.0.0.1:9000/api/form-templates/\")",
+      "Bash(pkill -f python)",
+      "Bash(python manage.py check --deploy)",
+      "Bash(npx vite *)",
+      "Bash(cmd.exe /c \"where node\")",
+      "Read(//c/Program Files/nodejs/**)",
+      "Read(//d/Program Files/nodejs/**)",
+      "Read(//c/Program Files \\(x86\\)/nodejs/**)"
+    ]
+  }
+}

@@ -19,3 +19,13 @@ export const getSuppliers = (params) => api.get('/suppliers/', { params })
 export const createSupplier = (data) => api.post('/suppliers/', data)
 export const updateSupplier = (id, data) => api.put(`/suppliers/${id}/`, data)
 export const deleteSupplier = (id) => api.delete(`/suppliers/${id}/`)
+
+// Form template APIs
+export const getFormTemplateByCategory = (categoryId) =>
+  api.get('/form-templates/by_category/', { params: { category_id: categoryId } })
+export const getFormTemplates = (params) => api.get('/form-templates/', { params })
+export const getFormTemplate = (id) => api.get(`/form-templates/${id}/`)
+export const createFormTemplate = (data) => api.post('/form-templates/', data)
+export const updateFormTemplate = (id, data) => api.put(`/form-templates/${id}/`, data)
+export const deleteFormTemplate = (id) => api.delete(`/form-templates/${id}/`)
+export const getFieldRegistry = () => api.get('/form-templates/field_registry/')

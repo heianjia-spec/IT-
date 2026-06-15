@@ -143,128 +143,14 @@
         </el-row>
       </el-card>
 
-      <!-- Hardware Fields (Dynamic) -->
-      <el-card v-if="derivedType && ['server','pc','printer','network_device','switch'].includes(derivedType)" header="硬件信息" style="margin-bottom:16px">
-        <el-row :gutter="16">
-          <template v-for="f in currentTypeFields" :key="f">
-            <el-col :span="f === 'nic_info' || f === 'installed_device' || f === 'applicable_device' ? 24 : 8">
-              <!-- cpu_model, memory_info, disk_size, os, oob_address, ip_address, mac_address, firmware, rack_position, stack_id, cartridge_model, monitor_model -->
-              <el-form-item v-if="['cpu_model','memory_info','disk_size','os','oob_address','ip_address','mac_address','firmware','rack_position','stack_id','cartridge_model','monitor_model'].includes(f)" :label="getFieldLabel(f)">
-                <el-input v-model="form[f]" />
-              </el-form-item>
-              <!-- port_count, poe_power -->
-              <el-form-item v-else-if="['port_count','poe_power'].includes(f)" :label="getFieldLabel(f)">
-                <el-input-number v-model="form[f]" :min="0" style="width:100%" />
-              </el-form-item>
-              <!-- has_monitor, is_color, is_duplex, poe_support, stackable, redundancy_power -->
-              <el-form-item v-else-if="['has_monitor','is_color','is_duplex','poe_support','stackable','redundancy_power'].includes(f)" :label="getFieldLabel(f)">
-                <el-switch v-model="form[f]" />
-              </el-form-item>
-              <!-- printer_type, connect_type -->
-              <el-form-item v-else-if="f==='printer_type'" label="打印机类型">
-                <el-select v-model="form.printer_type" style="width:100%">
-                  <el-option v-for="(v,k) in PRINTER_TYPE_MAP" :key="k" :label="v" :value="k" />
-                </el-select>
-              </el-form-item>
-              <el-form-item v-else-if="f==='connect_type'" label="连接方式">
-                <el-select v-model="form.connect_type" style="width:100%">
-                  <el-option v-for="(v,k) in CONNECT_TYPE_MAP" :key="k" :label="v" :value="k" />
-                </el-select>
-              </el-form-item>
-              <!-- network_type -->
-              <el-form-item v-else-if="f==='network_type'" label="网络设备类型">
-                <el-select v-model="form.network_type" style="width:100%">
-                  <el-option v-for="(v,k) in NETWORK_TYPE_MAP" :key="k" :label="v" :value="k" />
-                </el-select>
-              </el-form-item>
-              <!-- port_type, nic_info -->
-              <el-form-item v-else-if="['port_type','nic_info'].includes(f)" :label="getFieldLabel(f)">
-                <el-input v-model="form[f]" type="textarea" :rows="2" />
-              </el-form-item>
-            </el-col>
-          </template>
-        </el-row>
-      </el-card>
-
-      <!-- Software Fields -->
-      <el-card v-if="derivedType === 'software'" header="软件信息" style="margin-bottom:16px">
-        <el-row :gutter="16">
-          <el-col :span="8">
-            <el-form-item label="软件类型">
-              <el-select v-model="form.software_type" style="width:100%">
-                <el-option v-for="(v,k) in SOFTWARE_TYPE_MAP" :key="k" :label="v" :value="k" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="版本号"><el-input v-model="form.version" /></el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="授权类型">
-              <el-select v-model="form.license_type" style="width:100%">
-                <el-option v-for="(v,k) in LICENSE_TYPE_MAP" :key="k" :label="v" :value="k" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="许可证号"><el-input v-model="form.license_key" /></el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="授权数量"><el-input-number v-model="form.license_count" :min="0" style="width:100%" /></el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="已用数量"><el-input-number v-model="form.used_count" :min="0" style="width:100%" /></el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="许可到期日期">
-              <el-date-picker v-model="form.license_expiry" type="date" style="width:100%" value-format="YYYY-MM-DD" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="运行平台"><el-input v-model="form.platform" /></el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="安装设备"><el-input v-model="form.installed_device" type="textarea" :rows="2" /></el-form-item>
-          </el-col>
-        </el-row>
-      </el-card>
-
-      <!-- Consumable Fields -->
-      <el-card v-if="derivedType === 'consumable'" header="耗材信息" style="margin-bottom:16px">
-        <el-row :gutter="16">
-          <el-col :span="8">
-            <el-form-item label="耗材类型">
-              <el-select v-model="form.consumable_type" style="width:100%">
-                <el-option v-for="(v,k) in CONSUMABLE_TYPE_MAP" :key="k" :label="v" :value="k" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="单位">
-              <el-select v-model="form.unit" style="width:100%">
-                <el-option v-for="(v,k) in UNIT_MAP" :key="k" :label="v" :value="k" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="当前库存"><el-input-number v-model="form.current_stock" :min="0" style="width:100%" /></el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="最低库存预警"><el-input-number v-model="form.min_stock" :min="0" style="width:100%" /></el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="单价"><el-input-number v-model="form.unit_price" :min="0" :precision="2" style="width:100%" /></el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="上次采购日期">
-              <el-date-picker v-model="form.last_purchase_date" type="date" style="width:100%" value-format="YYYY-MM-DD" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="适用设备"><el-input v-model="form.applicable_device" type="textarea" :rows="2" /></el-form-item>
-          </el-col>
-        </el-row>
-      </el-card>
+      <!-- Dynamic type-specific fields from template -->
+      <DynamicFormRenderer
+        v-if="templateConfig.sections.length"
+        v-model="form"
+        :template-config="templateConfig"
+        :context="{ asset_type: derivedType, status: form.status }"
+        :data-sources="templateDataSources"
+      />
 
       <!-- Submit -->
       <el-button type="primary" :loading="saving" @click="handleSave">保存</el-button>
@@ -274,12 +160,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { createAsset, updateAsset, getAsset } from '../../api/assets'
 import { getCategories, getDepartments, getLocations, getSuppliers } from '../../api/baseData'
-import { ASSET_TYPES, STATUS_MAP, PRINTER_TYPE_MAP, CONNECT_TYPE_MAP, NETWORK_TYPE_MAP, SOFTWARE_TYPE_MAP, LICENSE_TYPE_MAP, CONSUMABLE_TYPE_MAP, UNIT_MAP } from '../../utils/constants'
+import { ASSET_TYPES, STATUS_MAP } from '../../utils/constants'
+import { useFormTemplate } from '../../composables/useFormTemplate'
+import DynamicFormRenderer from '../../components/assets/DynamicFormRenderer.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -289,6 +177,8 @@ const categoryOptions = ref([])
 const departmentOptions = ref([])
 const locations = ref([])
 const suppliers = ref([])
+
+const { templateConfig, loading: templateLoading, dataSources: templateDataSources, loadTemplate, loadDataSources } = useFormTemplate()
 
 const getDefaultForm = () => ({
   asset_type: '', asset_number: '', name: '', nc_number: '', category: null, brand: '', spec_model: '', serial_number: '',
@@ -323,7 +213,6 @@ const derivedType = computed(() => {
   if (!form.category) return ''
   const node = findCategoryNode(form.category, categoryOptions.value)
   if (!node) return ''
-  // Walk up to root by checking which root node contains this one
   for (const root of categoryOptions.value) {
     if (findCategoryNode(form.category, [root])) {
       return ROOT_TYPE_MAP[root.name] || ''
@@ -332,20 +221,19 @@ const derivedType = computed(() => {
   return ''
 })
 
-const isHardware = computed(() => ['server', 'pc', 'printer', 'network_device', 'switch'].includes(derivedType.value))
-const currentTypeFields = computed(() => ASSET_TYPES[derivedType.value]?.fields || [])
-
-const FIELD_LABELS = {
-  cpu_model: 'CPU型号', memory_info: '内存', disk_size: '硬盘', os: '操作系统',
-  oob_address: '管理地址(OOB)', nic_info: '网卡信息', ip_address: 'IP地址', mac_address: 'MAC地址',
-  port_count: '端口数量', firmware: '固件版本', has_monitor: '是否带显示器', monitor_model: '显示器型号',
-  rack_position: '机架位置', stack_id: '堆叠编号',
-  is_color: '是否彩色', is_duplex: '是否双面打印', cartridge_model: '硒鼓/墨盒型号',
-  network_type: '网络设备类型', port_type: '端口类型', poe_support: '是否支持PoE', poe_power: 'PoE功率(W)',
-  stackable: '是否可堆叠', redundancy_power: '是否冗余电源',
-}
-
-const getFieldLabel = (f) => FIELD_LABELS[f] || f
+// All possible type-specific fields across all asset types
+const ALL_TYPE_FIELDS = [
+  // Hardware
+  'cpu_model','memory_info','disk_size','os','has_monitor','monitor_model','oob_address','nic_info','ip_address','mac_address','port_count','firmware',
+  // Printer
+  'printer_type','is_color','is_duplex','connect_type','cartridge_model',
+  // Network
+  'network_type','port_type','poe_support','poe_power','stackable','stack_id','redundancy_power','rack_position',
+  // Software
+  'software_type','version','license_type','license_key','license_count','used_count','license_expiry','platform','installed_device',
+  // Consumable
+  'consumable_type','unit','current_stock','min_stock','applicable_device','unit_price','last_purchase_date',
+]
 
 const loadOptions = async () => {
   const [cat, dept, loc, sup] = await Promise.all([
@@ -367,23 +255,28 @@ const loadOptions = async () => {
   categoryOptions.value = flatten(cat.data.results || cat.data)
 }
 
+// Load form template when category changes
+watch(() => form.category, (newCategoryId) => {
+  loadTemplate(newCategoryId)
+})
+
 const handleSave = async () => {
   saving.value = true
   try {
     const data = { ...form }
     data.asset_type = derivedType.value  // Auto-set from category
-    // Clean up type-specific fields not in current type
-    if (!isHardware.value) {
-      for (const f of ['cpu_model','memory_info','disk_size','os','has_monitor','monitor_model','oob_address','nic_info','ip_address','mac_address','port_count','firmware','printer_type','is_color','is_duplex','connect_type','cartridge_model','network_type','port_type','poe_support','poe_power','stackable','stack_id','redundancy_power','rack_position']) {
-        delete data[f]
+
+    // Clean up ALL type-specific fields, they'll be set via the template
+    // The dynamic fields in the active template will have valid values,
+    // fields not in the template will still be in `data` from getDefaultForm.
+    // We keep them since the backend ignores empty strings for non-applicable types.
+    // But we DO want to clear null values for cleaner payload:
+    for (const key of Object.keys(data)) {
+      if (data[key] === null || data[key] === '') {
+        delete data[key]
       }
     }
-    if (derivedType.value !== 'software') {
-      for (const f of ['software_type','version','license_type','license_key','license_count','used_count','license_expiry','platform','installed_device']) { delete data[f] }
-    }
-    if (derivedType.value !== 'consumable') {
-      for (const f of ['consumable_type','unit','current_stock','min_stock','applicable_device','unit_price','last_purchase_date']) { delete data[f] }
-    }
+
     if (isEdit.value) {
       await updateAsset(route.params.id, data)
     } else {
@@ -399,10 +292,14 @@ const handleSave = async () => {
 }
 
 onMounted(async () => {
-  await loadOptions()
+  await Promise.all([loadOptions(), loadDataSources()])
   if (isEdit.value) {
     const res = await getAsset(route.params.id)
     Object.assign(form, res.data)
+    // Load template for the edited asset's category
+    if (form.category) {
+      await loadTemplate(form.category)
+    }
   }
 })
 </script>
